@@ -1,8 +1,6 @@
 package ru.jamanil.WeatherMeasurementServer.model;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 
 import javax.persistence.Entity;
@@ -22,8 +20,7 @@ import java.time.LocalDateTime;
  * 19.10.2022
  */
 @Entity
-@Getter
-@Setter
+@Data
 public class Measurement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

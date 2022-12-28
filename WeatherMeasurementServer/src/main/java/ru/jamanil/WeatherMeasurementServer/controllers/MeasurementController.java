@@ -1,7 +1,6 @@
 package ru.jamanil.WeatherMeasurementServer.controllers;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,30 +32,36 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/measurements")
-@RequiredArgsConstructor
 public class MeasurementController {
     private final MeasurementService measurementService;
     private final MeasurementDtoSensorExistenceValidator sensorExistenceValidator;
     private static boolean measurementsEmpty;
 
+
+    @Autowired
+    public MeasurementController(MeasurementService measurementService,
+                                 MeasurementDtoSensorExistenceValidator sensorExistenceValidator) {
+        this.measurementService = measurementService;
+        this.sensorExistenceValidator = sensorExistenceValidator;
+        measurementsEmpty = measurementService.findAll().isEmpty();
+    }
+
     @GetMapping
     private ResponseEntity<List<MeasurementDto>> showAllMeasurements() {
         if (measurementsEmpty) {
             throw new MeasurementListEmptyException("Measurements list is empty");
-        } else {
-            List<MeasurementDto> measurementDtoList = measurementService.findAll()
-                    .stream().map(this::convertMeasurementToMeasurementDto).collect(Collectors.toList());
-            return new ResponseEntity<>(measurementDtoList, HttpStatus.OK);
         }
+        List<MeasurementDto> measurementDtoList = measurementService.findAll()
+                .stream().map(this::convertMeasurementToMeasurementDto).collect(Collectors.toList());
+        return new ResponseEntity<>(measurementDtoList, HttpStatus.OK);
     }
 
     @GetMapping("/rainyDaysCount")
     private ResponseEntity<Integer> showRainingDaysCount() {
         if (measurementsEmpty) {
             throw new MeasurementListEmptyException("Measurements list is empty");
-        } else {
-            return new ResponseEntity<>(measurementService.findRainingDaysCount(), HttpStatus.OK);
         }
+        return new ResponseEntity<>(measurementService.findRainingDaysCount(), HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -74,13 +79,13 @@ public class MeasurementController {
                         .append(';');
             }
             throw new MeasurementAdditionException(errorMessage.toString());
-        } else {
-            Measurement measurement = convertMeasurementDtoToMeasurement(measurementDto);
-            measurementService.save(measurement);
-            measurementsEmpty = false;
-
-            return ResponseEntity.ok(HttpStatus.OK);
         }
+
+        Measurement measurement = convertMeasurementDtoToMeasurement(measurementDto);
+        measurementService.save(measurement);
+        measurementsEmpty = false;
+
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @ExceptionHandler

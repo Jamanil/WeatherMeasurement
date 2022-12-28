@@ -2,8 +2,7 @@ package ru.jamanil.WeatherMeasurementServer.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -12,8 +11,7 @@ import javax.validation.constraints.Min;
  * @author Victor Datsenko
  * 19.10.2022
  */
-@Getter
-@Setter
+@Data
 public class MeasurementDto {
 
     @JsonProperty(value = "sensor", required = true)

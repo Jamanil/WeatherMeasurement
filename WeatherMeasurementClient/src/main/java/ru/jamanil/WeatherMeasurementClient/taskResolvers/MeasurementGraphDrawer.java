@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * @author Victor Datsenko
  * 20.10.2022
+ * Отрисровка графиков температуры с помощью Swing
  */
 @Component
 public class MeasurementGraphDrawer {

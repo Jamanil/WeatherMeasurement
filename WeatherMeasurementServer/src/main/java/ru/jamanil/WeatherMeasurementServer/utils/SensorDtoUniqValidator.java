@@ -1,6 +1,6 @@
 package ru.jamanil.WeatherMeasurementServer.utils;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -11,11 +11,14 @@ import ru.jamanil.WeatherMeasurementServer.services.SensorService;
  * @author Victor Datsenko
  * 19.10.2022
  */
-@SuppressWarnings("NullableProblems")
 @Component
-@RequiredArgsConstructor
 public class SensorDtoUniqValidator implements Validator {
     private final SensorService sensorService;
+
+    @Autowired
+    public SensorDtoUniqValidator(SensorService sensorService) {
+        this.sensorService = sensorService;
+    }
 
     @Override
     public boolean supports(Class<?> clazz) {

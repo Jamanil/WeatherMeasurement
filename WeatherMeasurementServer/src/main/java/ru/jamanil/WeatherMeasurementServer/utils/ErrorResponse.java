@@ -1,7 +1,6 @@
 package ru.jamanil.WeatherMeasurementServer.utils;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
@@ -9,8 +8,7 @@ import java.time.LocalDateTime;
  * @author Victor Datsenko
  * 19.10.2022
  */
-@Getter
-@Setter
+@Data
 public class ErrorResponse {
     private String message;
     private LocalDateTime timestamp;

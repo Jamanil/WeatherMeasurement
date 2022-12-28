@@ -1,6 +1,5 @@
 package ru.jamanil.WeatherMeasurementServer.controllers;
 
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +26,18 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sensors")
-@RequiredArgsConstructor
 public class SensorController {
     private final SensorService sensorService;
     private final SensorDtoUniqValidator sensorDtoUniqValidator;
     private final ModelMapper modelMapper;
+
+    public SensorController(SensorService sensorService,
+                            SensorDtoUniqValidator sensorUniqValidator,
+                            ModelMapper modelMapper) {
+        this.sensorService = sensorService;
+        this.sensorDtoUniqValidator = sensorUniqValidator;
+        this.modelMapper = modelMapper;
+    }
 
     @PostMapping("/registration")
     private ResponseEntity<HttpStatus> registerSensor(@RequestBody @Valid SensorDto sensorDto,
@@ -48,12 +54,12 @@ public class SensorController {
                         .append(';');
             }
             throw new SensorRegistrationException(errorMsg.toString());
-        } else {
-            Sensor sensor = convertSensorDtoToSensor(sensorDto);
-            sensorService.save(sensor);
-
-            return ResponseEntity.ok(HttpStatus.OK);
         }
+
+        Sensor sensor = convertSensorDtoToSensor(sensorDto);
+        sensorService.save(sensor);
+
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     private Sensor convertSensorDtoToSensor(SensorDto sensorDto) {

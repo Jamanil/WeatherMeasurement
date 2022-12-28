@@ -1,9 +1,12 @@
 package ru.jamanil.WeatherMeasurementServer.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
@@ -14,8 +17,7 @@ import java.io.Serializable;
  * 19.10.2022
  */
 @Entity
-@Getter
-@Setter
+@Data
 public class Sensor implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

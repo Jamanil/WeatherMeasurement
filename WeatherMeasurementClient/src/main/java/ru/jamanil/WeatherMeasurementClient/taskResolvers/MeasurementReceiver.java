@@ -1,7 +1,8 @@
 package ru.jamanil.WeatherMeasurementClient.taskResolvers;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import ru.jamanil.WeatherMeasurementClient.models.Measurement;
@@ -13,20 +14,25 @@ import java.util.Objects;
 /**
  * @author Victor Datsenko
  * 20.10.2022
+ * Класс, получающий замеры погоды из базы данных
  */
 @Component
-@RequiredArgsConstructor
 public class MeasurementReceiver {
-    private final Environment environment;
-
+    public static final Logger log = LoggerFactory.getLogger(MeasurementReceiver.class);
     private static final RestTemplate template = new RestTemplate();
+    @Value("${weather_measurement.server_ip}")
+    private String SERVER_IP;
+    @Value("${weather_measurement.server_port}")
+    private String SERVER_PORT;
+
+
 
     public List<Measurement> getMeasurements() {
+        String url = String.format("http://%s:%s/measurements", SERVER_IP, SERVER_PORT);
+        List<Measurement> measurements = List.of(Objects.requireNonNull(template.getForEntity(url, Measurement[].class).getBody()));
 
-        String url = String.format("http://%s:%s/measurements",
-                environment.getProperty("weather_measurement.server_ip"),
-                environment.getProperty("weather_measurement.server_port"));
+        log.info("Received {} measurements", measurements.size());
 
-        return Arrays.asList(Objects.requireNonNull(template.getForEntity(url, Measurement[].class).getBody()));
+        return measurements;
     }
 }

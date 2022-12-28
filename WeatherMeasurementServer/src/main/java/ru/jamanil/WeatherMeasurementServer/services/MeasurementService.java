@@ -1,8 +1,7 @@
 package ru.jamanil.WeatherMeasurementServer.services;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.jamanil.WeatherMeasurementServer.model.Measurement;
 import ru.jamanil.WeatherMeasurementServer.repositories.MeasurementRepository;
 
@@ -14,11 +13,16 @@ import java.util.List;
  * 19.10.2022
  */
 @Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final SensorService sensorService;
+
+    @Autowired
+    public MeasurementService(MeasurementRepository measurementRepository,
+                              SensorService sensorService) {
+        this.measurementRepository = measurementRepository;
+        this.sensorService = sensorService;
+    }
 
     public List<Measurement> findAll() {
         return measurementRepository.findAll();
@@ -28,7 +32,6 @@ public class MeasurementService {
         return measurementRepository.findAllByRaining(true).size();
     }
 
-    @Transactional
     public void save(Measurement measurement) {
         measurement.setCreatedAt(LocalDateTime.now());
         String sensorName = measurement.getSensor().getName();
